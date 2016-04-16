@@ -1,0 +1,14 @@
+
+    elif mode == 'line':
+        if left_edge_stat == 1 and right_edge_stat == 1:
+            drive(1, 1, 10)
+            time.sleep(0.1)
+        if left_edge_stat == 0 and right_edge_stat == 1:
+            drive(1, 0, 10)
+            time.sleep(0.1)
+        if left_edge_stat == 1 and right_edge_stat == 0:
+            drive(0, 1, 10)
+            time.sleep(0.1)
+        if left_edge_stat == 0 and right_edge_stat == 0:
+            drive(-1, -1, 10)
+            time.sleep(0.1)
