@@ -124,6 +124,19 @@ def turn_right_90():
         drive(20, -20, 1)
         time.wait(1)
 
+def turn_left_90():
+    angle_zero = rel_angle
+    drive(-20, 20, 10)
+    while ((rel_angle - angle_zero)%360 > 80): 
+        drive(-20, 20, 1)
+        time.wait(1)
+    while ((rel_angle - angle_zero)%360 > 100): 
+        drive(20, -20, 1)
+        time.wait(1)
+
+def forward():
+    drive(20, 20, 10)
+
 
 #Init the MQTT client
 client = mqtt.Client()
@@ -152,10 +165,19 @@ while True:
             drive(30, 30, 20)
         elif key[pygame.K_DOWN]:
             drive(-30, -30, 20)
-        elif key[pygame.K_4]:
-            turn_right_90()
 
-    #elif mode == 'obstacle':
+    elif mode == 'obstacle':
+        while distance_stat > 15:
+            forward()
+            time.sleep(1)
+        if distance_stat < 15:
+            turn_right_90()
+            time.sleep(1)
+            if distance_stat < 15:
+                turn_left_90()
+                turn_left_90()
+                time.sleep(1)
+
 
 
     #elif mode == 'line':
@@ -180,5 +202,5 @@ while True:
         if (event.type == pygame.QUIT):
             sys.exit()
 
-    #Max 40FPS      
-    pygame.time.delay(1)
+    #Max 1FPS      
+    time.sleep(1)
