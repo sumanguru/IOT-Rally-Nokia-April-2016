@@ -63,13 +63,13 @@ while True:
     #Check pressed keys and actuate accordingly
     key = pygame.key.get_pressed()
     if key[pygame.K_LEFT]:
-        drive(20, -20, 10)
+        drive(1, -1, 1)
     if key[pygame.K_RIGHT]:
-        drive(-20, 20, 10)
+        drive(-1, 1, 1)
     if key[pygame.K_UP]: 
-        drive(30, 30, 20)
+        drive(1, 1, 1)
     if key[pygame.K_DOWN]:
-        drive(-30, -30, 20)
+        drive(-1, -1, 1)
 
     #Pygame nessessities
     for event in pygame.event.get():

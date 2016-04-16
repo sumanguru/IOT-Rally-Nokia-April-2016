@@ -122,26 +122,26 @@ def blink(pin, on, delay):
 
 def turn_right_90():
     angle_zero = rel_angle
-    drive(-20, 20, 10)
+    drive(-20, 20, 1)
     while ((rel_angle - angle_zero)%360 < 80): 
-        drive(-20, 20, 1)
-        time.wait(1)
+        drive(-10, 10, 1)
+        time.sleep(0.1)
     while ((rel_angle - angle_zero)%360 > 100): 
-        drive(20, -20, 1)
-        time.wait(1)
+        drive(10, -10, 1)
+        time.sleep(0.1)
 
 def turn_left_90():
     angle_zero = rel_angle
-    drive(-20, 20, 10)
+    drive(20, -20, 1)
     while ((rel_angle - angle_zero)%360 < 80): 
-        drive(-20, 20, 1)
-        time.wait(1)
+        drive(-10, 10, 1)
+        time.sleep(0.1)
     while ((rel_angle - angle_zero)%360 > 100): 
-        drive(20, -20, 1)
-        time.wait(1)
+        drive(10, -10, 1)
+        time.sleep(0.1)
 
 def forward():
-    drive(20, 20, 10)
+    drive(2, 2, 1)
 
 
 #Init the MQTT client
@@ -168,25 +168,25 @@ while True:
     #Keyboard manual control mode
     if mode == 'keyboard':
         if key[pygame.K_LEFT]:
-            drive(20, -20, 10)
+            drive(2, -2, 1)
         elif key[pygame.K_RIGHT]:
-            drive(-20, 20, 10)
+            drive(-2, 2, 1)
         elif key[pygame.K_UP]: 
-            drive(30, 30, 20)
+            drive(3, 3, 1)
         elif key[pygame.K_DOWN]:
-            drive(-30, -30, 20)
+            drive(-3, -3, 1)
 
     elif mode == 'obstacle':
-        while distance_stat > 30:
+        while distance_stat > 10:
             forward()
-            time.sleep(1)
-        if distance_stat < 30:
+            time.sleep(0.1)
+        if distance_stat < 10:
             turn_right_90()
-            time.sleep(1)
-            if distance_stat < 30:
+            time.sleep(0.1)
+            if distance_stat < 10:
                 turn_left_90()
                 turn_left_90()
-                time.sleep(1)
+                time.sleep(0.1)
 
     elif mode == 'line':
         if left_edge_stat == 1 and right_edge_stat == 1:
@@ -221,4 +221,4 @@ while True:
             sys.exit()
 
     #Max 1FPS      
-    time.sleep(1)
+    time.sleep(0.1)
