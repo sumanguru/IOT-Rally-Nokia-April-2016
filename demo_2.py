@@ -37,13 +37,13 @@ def on_connect(client, userdata, flags, rc):
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
     client.subscribe("RELLUUP")
-
+# Decodes the msgs to variables
 def decode(data):
     if 'edge' in data['sensor']:
         temp = data['data']
         left_edge_stat = temp[0]
         right_edge_stat = temp[1]
-        print(temp[0],temp[1])
+        #print(temp[0],temp[1]) #debug
     elif 'distance' in data['sensor']:
         temp = data['data']
         distance_stat = temp[0]
@@ -70,7 +70,8 @@ def on_message(client, userdata, msg):
     try:
         luku = json.loads(viesti)
     except ValueError:
-        print("ValueError detected :|")
+        print("ValueError detected :|") 
+        #Raises error if battery low and wifi module is shutting down
     if ('sensor' in luku) and ('data' in luku):
         decode(luku)
 
@@ -101,20 +102,42 @@ client.on_message = on_message
 client.connect("54.93.95.222", 1883, 60)
 client.loop_start() #Unblocking loop connect/reconnect/write/read routine
 
+mode = 'keyboard'
 
 #Main loop
 while True:
 
-    #Check pressed keys and actuate accordingly
+    #Check pressed keys
     key = pygame.key.get_pressed()
-    if key[pygame.K_LEFT]:
-        drive(20, -20, 10)
-    if key[pygame.K_RIGHT]:
-        drive(-20, 20, 10)
-    if key[pygame.K_UP]: 
-        drive(30, 30, 20)
-    if key[pygame.K_DOWN]:
-        drive(-30, -30, 20)
+
+    #Keyboard manual control mode
+    if mode == 'keyboard':
+        if key[pygame.K_LEFT]:
+            drive(20, -20, 10)
+        elif key[pygame.K_RIGHT]:
+            drive(-20, 20, 10)
+        elif key[pygame.K_UP]: 
+            drive(30, 30, 20)
+        elif key[pygame.K_DOWN]:
+            drive(-30, -30, 20)
+
+    #elif mode == 'obstacle':
+
+    #elif mode == 'line':
+
+
+    #Mode switching
+    if key[pygame.K_1]:
+        mode = 'keyboard'
+        print('Manual control mode')
+    elif key[pygame.K_2]:
+        mode = 'line'
+        print('Line follower mode')
+    elif key[pygame.K_3]:
+        mode = 'obstacle'
+        print('Obstacle avoidance mode')
+
+
 
     #Pygame nessessities
     for event in pygame.event.get():
