@@ -43,6 +43,7 @@ def decode(data):
         temp = data['data']
         left_edge_stat = temp[0]
         right_edge_stat = temp[1]
+        print(temp[0],temp[1])
     elif 'distance' in data['sensor']:
         temp = data['data']
         distance_stat = temp[0]
@@ -66,16 +67,16 @@ def on_message(client, userdata, msg):
     #print(msg.topic+" "+str(msg.payload))
     #print(msg.payload)
     viesti = msg.payload.decode('ascii')
-    luku = json.loads(viesti)
+    try:
+        luku = json.loads(viesti)
+    except ValueError:
+        print("ValueError detected :|")
     if ('sensor' in luku) and ('data' in luku):
-        tieto = luku['data']          
-        tieto = tieto[0]
-        otsikko = luku['sensor']
-        print(otsikko + "   " + str(tieto))
         decode(luku)
 
-def on_publish(client, userdata, mid):
-    print("Sent message with ID = " + str(mid) )
+#def on_publish(client, userdata, mid):
+    #print("Sent message with ID = " + str(mid) )
+
 
 # Functions for actuating the robot around
 def drive(pwr_left, pwr_right, time):
@@ -96,7 +97,7 @@ def blink(pin, on, delay):
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
-client.on_publish = on_publish
+#client.on_publish = on_publish
 client.connect("54.93.95.222", 1883, 60)
 client.loop_start() #Unblocking loop connect/reconnect/write/read routine
 
