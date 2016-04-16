@@ -44,9 +44,11 @@ def on_connect(client, userdata, flags, rc):
 def decode(data):
     if 'edge' in data['sensor']:
         temp = data['data']
+        global left_edge_stat
+        global right_edge_stat
         left_edge_stat = temp[0]
         right_edge_stat = temp[1]
-        #print(temp[0],temp[1]) #debug
+        print(temp[0],temp[1]) #debug
     elif 'distance' in data['sensor']:
         temp = data['data']
         global distance_stat
@@ -63,6 +65,7 @@ def decode(data):
         gyroz_stat = temp[5]
     elif 'magneto' in data['sensor']:
         temp = data['data']
+        global angle        
         magnx_stat = temp[0]
         magny_stat = temp[1]
         magnz_stat = temp[2]
@@ -108,14 +111,14 @@ def drive(pwr_left, pwr_right, time):
     var = json.dumps(tupl)
     var = '{"command":"drive","mdata":'+ str(var) + "}"
     tupl = client.publish("RELLUDOWN", payload=var)
-    print("Command issued: " + var + " Under ID = " + str(tupl[1]))
+    #print("Command issued: " + var + " Under ID = " + str(tupl[1]))
 
 def blink(pin, on, delay):
     tupl = (pin, on, delay)
     var = json.dumps(tupl)
     var = '{"command":"lights","data":'+ str(var) + "}"
     tupl = client.publish("RELLUDOWN", payload=var)
-    print("Command issued: " + var + " Under ID = " + str(tupl[1]))
+    #print("Command issued: " + var + " Under ID = " + str(tupl[1]))
 
 def turn_right_90():
     angle_zero = rel_angle
@@ -154,11 +157,13 @@ angle = 0.01
 
 #Main loop
 while True:
-
+    speed = 1
+    speed_turn = 1
+    time_motor = 1
     #Check pressed keys
     key = pygame.key.get_pressed()
 
-    print(distance_stat)
+    #print(distance_stat)
 
     #Keyboard manual control mode
     if mode == 'keyboard':
@@ -183,11 +188,19 @@ while True:
                 turn_left_90()
                 time.sleep(1)
 
-
-
-    #elif mode == 'line':
-
-
+    elif mode == 'line':
+        if left_edge_stat == 1 and right_edge_stat == 1:
+            drive(speed, speed, time_motor)
+            time.sleep(0.1)
+        if left_edge_stat == 0 and right_edge_stat == 1:
+            drive(speed_turn, -speed_turn, time_motor)
+            time.sleep(0.1)
+        if left_edge_stat == 1 and right_edge_stat == 0:
+            drive(-speed_turn, speed_turn, time_motor)
+            time.sleep(0.1)
+        if left_edge_stat == 0 and right_edge_stat == 0:
+            drive(-speed, -speed, time_motor)
+            time.sleep(0.1)
     #Mode switching
     if key[pygame.K_1]:
         mode = 'keyboard'
