@@ -39,11 +39,27 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe("RELLUUP")
 
 def decode(data):
-    if 'edge' in data:
+    if 'edge' in data['sensor']:
         temp = data['data']
         left_edge_stat = temp[0]
         right_edge_stat = temp[1]
-        print[temp[0], temp[1]]
+    elif 'distance' in data['sensor']:
+        temp = data['data']
+        distance_stat = temp[0]
+    elif 'acc_gyro' in data['sensor']:
+        temp = data['data']
+        accelx_stat = temp[0]
+        accely_stat = temp[1]
+        accelz_stat = temp[2]
+        gyrox_stat = temp[3]
+        gyroy_stat = temp[4]
+        gyroz_stat = temp[5]
+    elif 'magneto' in data['sensor']:
+        temp = data['data']
+        magnx_stat = temp[0]
+        magny_stat = temp[1]
+        magnz_stat = temp[2]
+    
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
