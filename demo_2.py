@@ -123,7 +123,7 @@ def blink(pin, on, delay):
 def turn_right_90():
     angle_zero = rel_angle
     drive(-20, 20, 10)
-    while ((rel_angle - angle_zero)%360 > 80): 
+    while ((rel_angle - angle_zero)%360 < 80): 
         drive(-20, 20, 1)
         time.wait(1)
     while ((rel_angle - angle_zero)%360 > 100): 
@@ -133,7 +133,7 @@ def turn_right_90():
 def turn_left_90():
     angle_zero = rel_angle
     drive(-20, 20, 10)
-    while ((rel_angle - angle_zero)%360 > 80): 
+    while ((rel_angle - angle_zero)%360 < 80): 
         drive(-20, 20, 1)
         time.wait(1)
     while ((rel_angle - angle_zero)%360 > 100): 
