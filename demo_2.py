@@ -2,6 +2,7 @@ import paho.mqtt.client as mqtt
 import json
 import time
 import sys
+import math
 import pygame
 from pygame.locals import *
 
@@ -60,6 +61,22 @@ def decode(data):
         magnx_stat = temp[0]
         magny_stat = temp[1]
         magnz_stat = temp[2]
+        if not ((magny_stat == 0) or (magnx_stat == 0)):
+            angle = (math.degrees(float(math.atan(float(magnx_stat)/float(magny_stat)))))
+            print(float(magny_stat)/float(magnx_stat))
+            if (magny_stat > 0 and magnx_stat > 0):
+                angle = 90 - angle
+            elif (magny_stat < 0 and magnx_stat < 0):
+                angle = 90 - angle
+                angle += 180
+            elif (magny_stat > 0 and magnx_stat < 0):
+                angle = -angle
+                angle += 90
+            elif (magny_stat < 0 and magnx_stat > 0):
+                angle = -angle
+                angle += 270
+            print(angle)
+        print(magnx_stat, magny_stat, magnz_stat)
     
 
 # The callback for when a PUBLISH message is received from the server.
@@ -94,6 +111,9 @@ def blink(pin, on, delay):
     tupl = client.publish("RELLUDOWN", payload=var)
     print("Command issued: " + var + " Under ID = " + str(tupl[1]))
 
+#def turn_right_90()
+    #drive()
+
 #Init the MQTT client
 client = mqtt.Client()
 client.on_connect = on_connect
@@ -103,6 +123,7 @@ client.connect("54.93.95.222", 1883, 60)
 client.loop_start() #Unblocking loop connect/reconnect/write/read routine
 
 mode = 'keyboard'
+angle = 0.01
 
 #Main loop
 while True:
@@ -122,6 +143,7 @@ while True:
             drive(-30, -30, 20)
 
     #elif mode == 'obstacle':
+
 
     #elif mode == 'line':
 
