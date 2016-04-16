@@ -31,22 +31,22 @@ def on_message(client, userdata, msg):
     print(str(msg.payload))
 
 def on_publish(client, userdata, mid):
-	print("Sent message with ID = " + str(mid) )
+    print("Sent message with ID = " + str(mid) )
 
 # Functions for actuating the robot around
 def drive(pwr_left, pwr_right, time):
-	tupl = (pwr_left, pwr_right, time)
-	var = json.dumps(tupl)
-	var = '{"command":"drive","mdata":'+ str(var) + "}"
-	tupl = client.publish("RELLUDOWN", payload=var)
-	print("Command issued: " + var + " Under ID = " + str(tupl[1]))
+    tupl = (pwr_left, pwr_right, time)
+    var = json.dumps(tupl)
+    var = '{"command":"drive","mdata":'+ str(var) + "}"
+    tupl = client.publish("RELLUDOWN", payload=var)
+    print("Command issued: " + var + " Under ID = " + str(tupl[1]))
 
 def blink(pin, on, delay):
-	tupl = (pin, on, delay)
-	var = json.dumps(tupl)
-	var = '{"command":"lights","data":'+ str(var) + "}"
-	tupl = client.publish("RELLUDOWN", payload=var)
-	print("Command issued: " + var + " Under ID = " + str(tupl[1]))
+    tupl = (pin, on, delay)
+    var = json.dumps(tupl)
+    var = '{"command":"lights","data":'+ str(var) + "}"
+    tupl = client.publish("RELLUDOWN", payload=var)
+    print("Command issued: " + var + " Under ID = " + str(tupl[1]))
 
 #Init the MQTT client
 client = mqtt.Client()
@@ -60,21 +60,21 @@ client.loop_start() #Unblocking loop connect/reconnect/write/read routine
 #Main loop
 while True:
 
-	#Check pressed keys and actuate accordingly
-	key = pygame.key.get_pressed()
-	if key[pygame.K_LEFT]:
-		drive(20, -20, 10)
-	if key[pygame.K_RIGHT]:
-		drive(-20, 20, 10)
-	if key[pygame.K_UP]: 
-		drive(30, 30, 20)
-	if key[pygame.K_DOWN]:
-		drive(-30, -30, 20)
+    #Check pressed keys and actuate accordingly
+    key = pygame.key.get_pressed()
+    if key[pygame.K_LEFT]:
+        drive(20, -20, 10)
+    if key[pygame.K_RIGHT]:
+        drive(-20, 20, 10)
+    if key[pygame.K_UP]: 
+        drive(30, 30, 20)
+    if key[pygame.K_DOWN]:
+        drive(-30, -30, 20)
 
-	#Pygame nessessities
-	for event in pygame.event.get():
-		if (event.type == pygame.QUIT):
-			sys.exit()
+    #Pygame nessessities
+    for event in pygame.event.get():
+        if (event.type == pygame.QUIT):
+            sys.exit()
 
-	#Max 30FPS		
-	pygame.time.delay(1000/30)
+    #Max 30FPS      
+    pygame.time.delay(1000/30)
