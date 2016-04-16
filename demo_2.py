@@ -49,7 +49,10 @@ def decode(data):
         #print(temp[0],temp[1]) #debug
     elif 'distance' in data['sensor']:
         temp = data['data']
+        global distance_stat
         distance_stat = temp[0]
+        #print(distance_stat)
+        #print(temp[0])
     elif 'acc_gyro' in data['sensor']:
         temp = data['data']
         accelx_stat = temp[0]
@@ -65,7 +68,7 @@ def decode(data):
         magnz_stat = temp[2]
         if not ((magny_stat == 0) or (magnx_stat == 0)):
             angle = (math.degrees(float(math.atan(float(magnx_stat)/float(magny_stat)))))
-            print(float(magny_stat)/float(magnx_stat))
+            #print(float(magny_stat)/float(magnx_stat))
             if (magny_stat > 0 and magnx_stat > 0):
                 angle = 90 - angle
             elif (magny_stat < 0 and magnx_stat < 0):
@@ -77,9 +80,9 @@ def decode(data):
             elif (magny_stat < 0 and magnx_stat > 0):
                 angle = -angle
                 angle += 270
-            print(angle)
+            #print(angle)
             rel_angle = (angle - angle_at_start) % 360
-        print(magnx_stat, magny_stat, magnz_stat)
+        #print(magnx_stat, magny_stat, magnz_stat)
     
 
 # The callback for when a PUBLISH message is received from the server.
@@ -155,6 +158,8 @@ while True:
     #Check pressed keys
     key = pygame.key.get_pressed()
 
+    print(distance_stat)
+
     #Keyboard manual control mode
     if mode == 'keyboard':
         if key[pygame.K_LEFT]:
@@ -167,13 +172,13 @@ while True:
             drive(-30, -30, 20)
 
     elif mode == 'obstacle':
-        while distance_stat > 15:
+        while distance_stat > 30:
             forward()
             time.sleep(1)
-        if distance_stat < 15:
+        if distance_stat < 30:
             turn_right_90()
             time.sleep(1)
-            if distance_stat < 15:
+            if distance_stat < 30:
                 turn_left_90()
                 turn_left_90()
                 time.sleep(1)
