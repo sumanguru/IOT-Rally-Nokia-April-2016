@@ -15,6 +15,18 @@ screen.blit(asurf, (0, 0))
 pygame.display.flip()
 pygame.display.set_caption("THIS IS NOT A SIMPLE DEMO")
 
+left_edge_stat = 0
+right_edge_stat = 0
+distance_stat = 0
+accelx_stat = 0
+accely_stat = 0
+accelz_stat = 0
+gyrox_stat = 0
+gyroy_stat = 0
+gyroz_stat = 0
+magnx_stat = 0
+magny_stat = 0
+magnz_stat = 0
 
 #Code for the communications with the MQTT broker / device
 
@@ -26,17 +38,25 @@ def on_connect(client, userdata, flags, rc):
     # reconnect then subscriptions will be renewed.
     client.subscribe("RELLUUP")
 
+def decode(data):
+    if 'edge' in data:
+        temp = data['data']
+        left_edge_stat = temp[0]
+        right_edge_stat = temp[1]
+        print[temp[0], temp[1]]
+
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
     #print(msg.topic+" "+str(msg.payload))
     #print(msg.payload)
     viesti = msg.payload.decode('ascii')
     luku = json.loads(viesti)
-    if 'sensor' in luku:
-        tieto = luku['data']
+    if ('sensor' in luku) and ('data' in luku):
+        tieto = luku['data']          
         tieto = tieto[0]
         otsikko = luku['sensor']
         print(otsikko + "   " + str(tieto))
+        decode(luku)
 
 def on_publish(client, userdata, mid):
     print("Sent message with ID = " + str(mid) )
@@ -84,5 +104,5 @@ while True:
         if (event.type == pygame.QUIT):
             sys.exit()
 
-    #Max 30FPS      
-    pygame.time.delay(1000/30)
+    #Max 40FPS      
+    pygame.time.delay(1000/40)
