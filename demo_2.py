@@ -28,6 +28,8 @@ gyroz_stat = 0
 magnx_stat = 0
 magny_stat = 0
 magnz_stat = 0
+angle_at_start = 0
+rel_angle = 0
 
 #Code for the communications with the MQTT broker / device
 
@@ -76,6 +78,7 @@ def decode(data):
                 angle = -angle
                 angle += 270
             print(angle)
+            rel_angle = (angle - angle_at_start) % 360
         print(magnx_stat, magny_stat, magnz_stat)
     
 
@@ -111,8 +114,16 @@ def blink(pin, on, delay):
     tupl = client.publish("RELLUDOWN", payload=var)
     print("Command issued: " + var + " Under ID = " + str(tupl[1]))
 
-#def turn_right_90()
-    #drive()
+def turn_right_90():
+    angle_zero = rel_angle
+    drive(-20, 20, 10)
+    while ((rel_angle - angle_zero)%360 > 80): 
+        drive(-20, 20, 1)
+        time.wait(1)
+    while ((rel_angle - angle_zero)%360 > 100): 
+        drive(20, -20, 1)
+        time.wait(1)
+
 
 #Init the MQTT client
 client = mqtt.Client()
@@ -141,6 +152,8 @@ while True:
             drive(30, 30, 20)
         elif key[pygame.K_DOWN]:
             drive(-30, -30, 20)
+        elif key[pygame.K_4]:
+            turn_right_90()
 
     #elif mode == 'obstacle':
 
@@ -158,6 +171,7 @@ while True:
     elif key[pygame.K_3]:
         mode = 'obstacle'
         print('Obstacle avoidance mode')
+        angle_at_start = angle
 
 
 
@@ -167,4 +181,4 @@ while True:
             sys.exit()
 
     #Max 40FPS      
-    pygame.time.delay(1000/40)
+    pygame.time.delay(1)
