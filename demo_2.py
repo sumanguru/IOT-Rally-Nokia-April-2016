@@ -149,7 +149,7 @@ client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
 #client.on_publish = on_publish
-client.connect("54.93.95.222", 1883, 60)
+client.connect("10.77.11.121", 1884, 60)
 client.loop_start() #Unblocking loop connect/reconnect/write/read routine
 
 mode = 'keyboard'
